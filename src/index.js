@@ -60,15 +60,24 @@ module.exports = function solveSudoku(matrix) {
       return false;
     }
   }
+  // check value function (combine row, column and box check)
+  function checkValue(row, column, value) {
+    if (checkRow(row, value) && checkColumn(column, value) && checkBox(getBox(row),getBox(column), value)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   //putValue
   function putValue(r,c) {
     for (let i = 1; i <= 9; i++) {
-      if (checkRow(r, i) && checkColumn(c, i) && checkBox(getBox(r),getBox(c), i)) {
+      if (checkValue(r, c, i)) {
         matrix[r][c] = i;
       }
     }
   }
+  
   //backtracking system
   // make given values static
 
