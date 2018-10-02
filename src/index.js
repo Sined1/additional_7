@@ -44,7 +44,7 @@ module.exports = function solveSudoku(matrix) {
     }
   }
 
-  // check close box
+  // check box 3x3
   function checkBox([startR, endR], [startC, endC], value) {
     let s = 0;
     for (let i = startR; i <= endR; i++) {
@@ -60,6 +60,7 @@ module.exports = function solveSudoku(matrix) {
       return false;
     }
   }
+
   // check value function (combine row, column and box check)
   function checkValue(row, column, value) {
     if (checkRow(row, value) && checkColumn(column, value) && checkBox(getBox(row),getBox(column), value)) {
@@ -69,15 +70,19 @@ module.exports = function solveSudoku(matrix) {
     }
   }
 
-  //putValue
-  function putValue(r,c) {
-    for (let i = 1; i <= 9; i++) {
-      if (checkValue(r, c, i)) {
-        matrix[r][c] = i;
+  //get emptyArray - array with unknown values from given Sudoku
+  function emptyArray(ar) {
+    let a = [];
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (ar[i][j] == 0) {
+          a.push([i, j]);
+        }
       }
     }
+    return a;
   }
-  
+
   //backtracking system
   // make given values static
 
@@ -88,6 +93,6 @@ module.exports = function solveSudoku(matrix) {
         putValue(i, j);
       }
     }
-  }
-  return(matrix);
+  }*/
+  return();
 }
