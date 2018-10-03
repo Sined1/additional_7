@@ -1,4 +1,7 @@
 module.exports = function solveSudoku(matrix) {
+  //create array for transformation and will work with it
+  const newMatrix = matrix;
+
   // check row
   function checkRow(row, column, value) {
     let s = 0;
@@ -6,7 +9,7 @@ module.exports = function solveSudoku(matrix) {
       if (i == column) {
         continue;
       }
-      if (value == matrix[row][i]) {
+      if (value == newMatrix[row][i]) {
         s++;
       }
     }
@@ -24,7 +27,7 @@ module.exports = function solveSudoku(matrix) {
       if (i == row) {
         continue;
       }
-      if (value == matrix[i][column]) {
+      if (value == newMatrix[i][column]) {
         s++;
       }
     }
@@ -58,7 +61,7 @@ module.exports = function solveSudoku(matrix) {
         if (i == row && j == column) {
           continue;
         }
-        if (value == matrix[i][j]) {
+        if (value == newMatrix[i][j]) {
           s++;
         }
       }
@@ -94,14 +97,14 @@ module.exports = function solveSudoku(matrix) {
   }
 
   //variables
-  let emAr = getEmptyArray(matrix);
+  let emAr = getEmptyArray(newMatrix);
   let row, col, val, s;
 
   //solving the main task
   for (let i = 0; i < (emAr.length / 2); i++) {
     row = emAr[i*2];
     col = emAr[i*2+1];
-    val = matrix[row][col];
+    val = newMatrix[row][col];
     s = val;
 
     // try to rewrite this for to while cycle
@@ -109,7 +112,7 @@ module.exports = function solveSudoku(matrix) {
       do {
         val++;
         if (checkValue(row, col, val)) {
-          matrix[row][col] = val;
+          newMatrix[row][col] = val;
           s = 0;
           break;
         } else {
@@ -117,17 +120,17 @@ module.exports = function solveSudoku(matrix) {
         }
       } while (val < 9);
     } else {
-      matrix[row][col] = 0;
+      newMatrix[row][col] = 0;
       i = i - 2;
     }
 
     // Check if value is not fit to the place. Return to the previous
     // step if not
     if (s == 9) {
-      matrix[row][col] = 0;
+      newMatrix[row][col] = 0;
       i = i - 2;
     }
   }
 
-  return(matrix);
+  return(newMatrix);
 }
