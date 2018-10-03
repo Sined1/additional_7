@@ -1,8 +1,11 @@
 module.exports = function solveSudoku(matrix) {
   // check row
-  function checkRow(row, value) {
+  function checkRow(row, column, value) {
     let s = 0;
     for (let i = 0; i < 9; i++) {
+      if (i == column) {
+        continue;
+      }
       if (value == matrix[row][i]) {
         s++;
       }
@@ -15,9 +18,12 @@ module.exports = function solveSudoku(matrix) {
   }
 
   // check column
-  function checkColumn(column, value) {
+  function checkColumn(row, column, value) {
     let s = 0;
     for (let i = 0; i < 9; i++) {
+      if (i == row) {
+        continue;
+      }
       if (value == matrix[i][column]) {
         s++;
       }
@@ -45,10 +51,13 @@ module.exports = function solveSudoku(matrix) {
   }
 
   // check box 3x3
-  function checkBox([startR, endR], [startC, endC], value) {
+  function checkBox([startR, endR], [startC, endC], row, column, value) {
     let s = 0;
     for (let i = startR; i <= endR; i++) {
       for (let j = startC; j <= endC; j++) {
+        if (i == row && j == column) {
+          continue;
+        }
         if (value == matrix[i][j]) {
           s++;
         }
@@ -63,7 +72,7 @@ module.exports = function solveSudoku(matrix) {
 
   // check value function (combine row, column and box check)
   function checkValue(row, column, value) {
-    if (checkRow(row, value) && checkColumn(column, value) && checkBox(getBox(row),getBox(column), value)) {
+    if (checkRow(row, column, value) && checkColumn(row, column, value) && checkBox(getBox(row), getBox(column), row, column, value)) {
       return true;
     } else {
       return false;
@@ -71,28 +80,54 @@ module.exports = function solveSudoku(matrix) {
   }
 
   //get emptyArray - array with unknown values from given Sudoku
-  function emptyArray(ar) {
+  function getEmptyArray(ar) {
     let a = [];
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        if (ar[i][j] == 0) {
-          a.push([i, j]);
+    let i, j;
+    for (i = 0; i < 9; i++) {
+      for (j = 0; j < 9; j++) {
+        if (ar[i][j] === 0) {
+          a.push(i, j);
         }
       }
     }
     return a;
   }
 
-  //backtracking system
-  // make given values static
+  //variables
+  let emAr = getEmptyArray(matrix);
+  let row, col, val, s;
 
-  // general cycle
-  for (let i = 0; i < 9; i++) {
-    for (let j = 0; j < 9; j++) {
-      if (matrix[i][j] == 0) {
-        putValue(i, j);
-      }
+  //solving the main task
+  for (let i = 0; i < (emAr.length / 2); i++) {
+    row = emAr[i*2];
+    col = emAr[i*2+1];
+    val = matrix[row][col];
+    s = val;
+
+    // try to rewrite this for to while cycle
+    if (val < 9) {
+      do {
+        val++;
+        if (checkValue(row, col, val)) {
+          matrix[row][col] = val;
+          s = 0;
+          break;
+        } else {
+          s++;
+        }
+      } while (val < 9);
+    } else {
+      matrix[row][col] = 0;
+      i = i - 2;
     }
-  }*/
-  return();
+
+    // Check if value is not fit to the place. Return to the previous
+    // step if not
+    if (s == 9) {
+      matrix[row][col] = 0;
+      i = i - 2;
+    }
+  }
+
+  return(matrix);
 }
